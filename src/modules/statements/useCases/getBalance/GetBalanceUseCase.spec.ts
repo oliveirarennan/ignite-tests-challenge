@@ -76,11 +76,11 @@ describe("Get Balance", () => {
     expect(userBalance.statement.length).toBe(2);
   });
 
-  it("should not be able to get a Balance of a non-existent user", () => {
-    expect(async () => {
-      await getBalanceUseCase.execute({
+  it("should not be able to get a Balance of a non-existent user", async () => {
+    await expect(
+      getBalanceUseCase.execute({
         user_id: "non-existent-user-id",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("User not found", 404));
   });
 });

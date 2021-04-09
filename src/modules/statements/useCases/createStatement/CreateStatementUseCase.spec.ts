@@ -44,15 +44,15 @@ describe("Create Statement", () => {
     expect(statement.description).toEqual("Test");
   });
 
-  it("should not be able to create a statement with a non-existent user", () => {
-    expect(async () => {
-      await createStatementUseCase.execute({
+  it("should not be able to create a statement with a non-existent user", async () => {
+    await expect(
+      createStatementUseCase.execute({
         amount: 100,
         description: "Test",
         type: OperationType.DEPOSIT,
         user_id: "non-existent-user-id",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("User not found", 404));
   });
 
   it("should be able to create deposit statement", async () => {
@@ -101,13 +101,13 @@ describe("Create Statement", () => {
       "user.test@test.com"
     );
 
-    expect(async () => {
-      await createStatementUseCase.execute({
+    await expect(
+      createStatementUseCase.execute({
         amount: 100,
         description: "WITHDRAW TEST",
         type: OperationType.WITHDRAW,
         user_id: user?.id as string,
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("Insufficient funds", 400));
   });
 });
