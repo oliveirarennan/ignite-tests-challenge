@@ -7,6 +7,7 @@ import { GetBalanceUseCase } from "./GetBalanceUseCase";
 enum OperationType {
   DEPOSIT = "deposit",
   WITHDRAW = "withdraw",
+  TRANSFER = "transfer",
 }
 
 let getBalanceUseCase: GetBalanceUseCase;
