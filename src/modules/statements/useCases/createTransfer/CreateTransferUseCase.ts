@@ -1,5 +1,6 @@
 import { injectable, inject } from "tsyringe";
 import { IUsersRepository } from "../../../users/repositories/IUsersRepository";
+import { Transfer } from "../../entities/Transfer";
 import { IStatementsRepository } from "../../repositories/IStatementsRepository";
 import { ITransferRepository } from "../../repositories/ITransfersRepository";
 import { CreateTransferError } from "./CreateTransferError";
@@ -70,13 +71,15 @@ class CreateTransferUseCase {
       type: OperationType.TRANSFER,
       description: "Transfer Operation",
       amount: -1 * amount,
+      transfer_id: transfer.id,
     });
 
     const receiverStatement = await this.statementsRepository.create({
       user_id: receiver_id,
       type: OperationType.TRANSFER,
-      description,
-      amount,
+      description: "Transfer Operation",
+      amount: amount,
+      transfer_id: transfer.id,
     });
   }
 }

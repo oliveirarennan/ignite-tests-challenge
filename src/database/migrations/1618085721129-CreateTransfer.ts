@@ -15,12 +15,14 @@ export class CreateTransfer1618085721129 implements MigrationInterface {
             name: "sender_id",
             type: "uuid",
           },
-          {
-            name: "receiver_id",
-            type: "uuid",
-          },
+
           {
             name: "created_at",
+            type: "timestamp",
+            default: "now()",
+          },
+          {
+            name: "updated_at",
             type: "timestamp",
             default: "now()",
           },
@@ -31,14 +33,6 @@ export class CreateTransfer1618085721129 implements MigrationInterface {
             referencedTableName: "users",
             referencedColumnNames: ["id"],
             columnNames: ["sender_id"],
-            onDelete: "SET NULL",
-            onUpdate: "SET NULL",
-          },
-          {
-            name: "FKReceiver",
-            referencedTableName: "users",
-            referencedColumnNames: ["id"],
-            columnNames: ["receiver_id"],
             onDelete: "SET NULL",
             onUpdate: "SET NULL",
           },

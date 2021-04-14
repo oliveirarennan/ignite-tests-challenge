@@ -4,11 +4,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { v4 as uuid } from "uuid";
 
 import { User } from "../../users/entities/User";
+import { Transfer } from "./Transfer";
 
 enum OperationType {
   DEPOSIT = "deposit",
@@ -37,10 +40,16 @@ export class Statement {
   @Column({ type: "enum", enum: OperationType })
   type: OperationType;
 
+  @Column("uuid")
+  transfer_id: string;
+
+  @OneToMany(() => Transfer, (transfer) => transfer.statement)
+  transfer: Transfer;
+
   @CreateDateColumn()
   created_at: Date;
 
-  @CreateDateColumn()
+  @UpdateDateColumn()
   updated_at: Date;
 
   constructor() {
