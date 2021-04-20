@@ -3,8 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -43,7 +43,8 @@ export class Statement {
   @Column("uuid")
   transfer_id: string;
 
-  @OneToMany(() => Transfer, (transfer) => transfer.statement)
+  @ManyToOne(() => Transfer, (transfer) => transfer.statements)
+  @JoinColumn({ name: "transfer_id" })
   transfer: Transfer;
 
   @CreateDateColumn()

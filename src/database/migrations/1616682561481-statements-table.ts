@@ -22,13 +22,18 @@ export class accountsTable1616682561481 implements MigrationInterface {
           {
             name: "amount",
             type: "decimal",
-            precision: 5,
+            precision: 6,
             scale: 2,
           },
           {
             name: "type",
             type: "enum",
-            enum: ["deposit", "withdraw"],
+            enum: ["deposit", "withdraw", "transfer"],
+          },
+          {
+            name: "transfer_id",
+            type: "uuid",
+            isNullable: true,
           },
           {
             name: "created_at",
@@ -46,6 +51,14 @@ export class accountsTable1616682561481 implements MigrationInterface {
             name: "FKStatementsUser",
             columnNames: ["user_id"],
             referencedTableName: "users",
+            referencedColumnNames: ["id"],
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
+          },
+          {
+            name: "FKStatementsTransfer",
+            columnNames: ["transfer_id"],
+            referencedTableName: "transfers",
             referencedColumnNames: ["id"],
             onUpdate: "CASCADE",
             onDelete: "CASCADE",

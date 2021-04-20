@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { v4 as uuidV4 } from "uuid";
 import { User } from "../../users/entities/User";
@@ -16,13 +17,6 @@ class Transfer {
   @PrimaryColumn("uuid")
   id?: string;
 
-  // @Column()
-  // receiver_id: string;
-
-  // @ManyToOne(() => User, (receiver) => receiver.statement)
-  // @JoinColumn({ name: "receiver_id" })
-  // receiver: User;
-
   @Column("uuid")
   sender_id: string;
 
@@ -30,12 +24,14 @@ class Transfer {
   @JoinColumn({ name: "sender_id" })
   sender: User;
 
-  @ManyToOne(() => Statement, (statement) => statement.transfer)
-  @JoinColumn({ name: "transfer_id" })
-  statement: Statement[];
+  @OneToMany(() => Statement, (statement) => statement.transfer)
+  statements: Statement[];
 
   @CreateDateColumn()
   created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   constructor() {
     if (!this.id) {

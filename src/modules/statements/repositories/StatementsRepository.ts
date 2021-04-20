@@ -5,7 +5,6 @@ import { ICreateStatementDTO } from "../useCases/createStatement/ICreateStatemen
 import { IGetBalanceDTO } from "../useCases/getBalance/IGetBalanceDTO";
 import { IGetStatementOperationDTO } from "../useCases/getStatementOperation/IGetStatementOperationDTO";
 import { IStatementsRepository } from "./IStatementsRepository";
-
 export class StatementsRepository implements IStatementsRepository {
   private repository: Repository<Statement>;
 
@@ -46,12 +45,12 @@ export class StatementsRepository implements IStatementsRepository {
   }: IGetBalanceDTO): Promise<
     { balance: number } | { balance: number; statement: Statement[] }
   > {
-    const statement = await this.repository.find({
+    const statements = await this.repository.find({
       where: { user_id },
       relations: ["transfer"],
     });
 
-    const balance = statement.reduce((acc, operation) => {
+    const balance = statements.reduce((acc, operation) => {
       if (operation.type === "withdraw") {
         return acc - Number(operation.amount);
       } else {
@@ -60,12 +59,34 @@ export class StatementsRepository implements IStatementsRepository {
     }, 0);
 
     if (with_statement) {
+      const statementsMapped = statements.map((statement) =>
+        statement.transfer
+          ? {
+              id: statement.transfer.id,
+              sender_id: statement.transfer.sender_id,
+              description: statement.description,
+              amount: statement.amount,
+              type: statement.type,
+              created_at: statement.created_at,
+              updated_at: statement.updated_at,
+            }
+          : {
+              id: statement.id,
+              description: statement.description,
+              amount: statement.amount,
+              type: statement.type,
+              created_at: statement.created_at,
+              updated_at: statement.updated_at,
+            }
+      );
       return {
-        statement,
+        //@ts-ignore
+        statement: statementsMapped,
         balance,
       };
     }
-
-    return { balance };
+    return {
+      balance,
+    };
   }
 }

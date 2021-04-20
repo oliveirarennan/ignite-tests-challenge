@@ -60,11 +60,15 @@ class CreateTransferUseCase {
     if (balance.balance < amount) {
       throw new CreateTransferError.InsufficientFunds();
     }
+    if (sender_id === receiver_id) {
+      throw new CreateTransferError.SelfTransfer();
+    }
 
     const transfer = await this.transfersRepository.create({
       sender_id,
       receiver_id,
     });
+    console.log(transfer);
 
     const senderStatement = await this.statementsRepository.create({
       user_id: sender_id,
@@ -74,6 +78,8 @@ class CreateTransferUseCase {
       transfer_id: transfer.id,
     });
 
+    console.log(senderStatement);
+
     const receiverStatement = await this.statementsRepository.create({
       user_id: receiver_id,
       type: OperationType.TRANSFER,
@@ -81,6 +87,8 @@ class CreateTransferUseCase {
       amount: amount,
       transfer_id: transfer.id,
     });
+
+    console.log(receiverStatement);
   }
 }
 
