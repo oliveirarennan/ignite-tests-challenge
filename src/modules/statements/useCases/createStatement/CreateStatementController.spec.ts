@@ -25,7 +25,7 @@ describe("Create Statement Controller", () => {
     await connection.close();
   });
 
-  it("should be able to create a stament Deposit Operation", async () => {
+  it("should be able to create a statement Deposit Operation", async () => {
     const authResponse = await request(app).post("/api/v1/sessions").send({
       email: "user@finapi.com.br",
       password: "user",
@@ -49,7 +49,7 @@ describe("Create Statement Controller", () => {
     expect(statement.body.description).toEqual("Statement Deposit Test");
   });
 
-  it("should be able to create a stament Withdraw Operation", async () => {
+  it("should be able to create a statement Withdraw Operation", async () => {
     const authResponse = await request(app).post("/api/v1/sessions").send({
       email: "user@finapi.com.br",
       password: "user",

@@ -5,6 +5,7 @@ import { ICreateStatementDTO } from "../useCases/createStatement/ICreateStatemen
 import { IGetBalanceDTO } from "../useCases/getBalance/IGetBalanceDTO";
 import { IGetStatementOperationDTO } from "../useCases/getStatementOperation/IGetStatementOperationDTO";
 import { IStatementsRepository } from "./IStatementsRepository";
+
 export class StatementsRepository implements IStatementsRepository {
   private repository: Repository<Statement>;
 
@@ -27,7 +28,7 @@ export class StatementsRepository implements IStatementsRepository {
       transfer_id,
     });
 
-    return this.repository.save(statement);
+    return await this.repository.save(statement);
   }
 
   async findStatementOperation({
@@ -88,5 +89,16 @@ export class StatementsRepository implements IStatementsRepository {
     return {
       balance,
     };
+  }
+
+  async getStatementByTransferId(
+    transfer_id: string
+  ): Promise<Statement[] | undefined> {
+    const statements = await this.repository.find({
+      where: { transfer_id },
+      relations: ["transfer"],
+    });
+
+    return statements;
   }
 }

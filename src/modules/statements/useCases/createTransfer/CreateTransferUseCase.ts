@@ -1,17 +1,9 @@
 import { injectable, inject } from "tsyringe";
 import { IUsersRepository } from "../../../users/repositories/IUsersRepository";
-import { Transfer } from "../../entities/Transfer";
 import { IStatementsRepository } from "../../repositories/IStatementsRepository";
 import { ITransferRepository } from "../../repositories/ITransfersRepository";
 import { CreateTransferError } from "./CreateTransferError";
 import { ICreateTransferDTO } from "./ICreateTransferDTO";
-
-/**
- * TODO:
- *  [x] Adicionar Transfer nos operation types
- *  [] Gerar Statemant positivo para o destinatario
- *  [] Gerar Statment negativo para o remetente
- */
 
 enum OperationType {
   DEPOSIT = "deposit",
@@ -25,7 +17,6 @@ interface IRequest {
   amount: number;
   description: string;
 }
-
 @injectable()
 class CreateTransferUseCase {
   constructor(
@@ -57,7 +48,7 @@ class CreateTransferUseCase {
       with_statement: false,
     });
 
-    if (balance.balance < amount) {
+    if (balance.balance < Number(amount)) {
       throw new CreateTransferError.InsufficientFunds();
     }
     if (sender_id === receiver_id) {
@@ -68,27 +59,24 @@ class CreateTransferUseCase {
       sender_id,
       receiver_id,
     });
-    console.log(transfer);
 
     const senderStatement = await this.statementsRepository.create({
       user_id: sender_id,
       type: OperationType.TRANSFER,
-      description: "Transfer Operation",
-      amount: -1 * amount,
+      description: description as string,
+      amount: -1 * Number(amount),
       transfer_id: transfer.id,
     });
 
-    console.log(senderStatement);
-
-    const receiverStatement = await this.statementsRepository.create({
+    await this.statementsRepository.create({
       user_id: receiver_id,
       type: OperationType.TRANSFER,
-      description: "Transfer Operation",
-      amount: amount,
+      description: description as string,
+      amount: Number(amount),
       transfer_id: transfer.id,
     });
 
-    console.log(receiverStatement);
+    return transfer;
   }
 }
 

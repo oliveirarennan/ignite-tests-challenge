@@ -24,6 +24,13 @@ class Transfer {
   @JoinColumn({ name: "sender_id" })
   sender: User;
 
+  @Column("uuid")
+  receiver_id: string;
+
+  @ManyToOne(() => User, (receiver) => receiver.statement)
+  @JoinColumn({ name: "sender_id" })
+  receiver: User;
+
   @OneToMany(() => Statement, (statement) => statement.transfer)
   statements: Statement[];
 
