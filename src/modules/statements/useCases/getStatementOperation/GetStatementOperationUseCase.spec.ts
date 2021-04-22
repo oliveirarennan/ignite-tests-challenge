@@ -7,6 +7,7 @@ import { GetStatementOperationUseCase } from "./GetStatementOperationUseCase";
 enum OperationType {
   DEPOSIT = "deposit",
   WITHDRAW = "withdraw",
+  TRANSFER = "transfer",
 }
 
 let getStatementOperationUseCase: GetStatementOperationUseCase;
@@ -59,20 +60,20 @@ describe("Get Statement Operation", () => {
       "user.test@test.com"
     );
 
-    expect(async () => {
-      await getStatementOperationUseCase.execute({
+    await expect(
+      getStatementOperationUseCase.execute({
         statement_id: "non-existent-statement-id",
         user_id: user?.id as string,
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("Statement not found", 404));
   });
 
   it("should not be able to get a operation of a non-existent user", async () => {
-    expect(async () => {
-      await getStatementOperationUseCase.execute({
+    await expect(
+      getStatementOperationUseCase.execute({
         statement_id: "non-existent-statement-id",
         user_id: "non-existent-user-id",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("User not found", 404));
   });
 });

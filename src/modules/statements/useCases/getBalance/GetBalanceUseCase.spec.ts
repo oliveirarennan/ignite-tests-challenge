@@ -7,6 +7,7 @@ import { GetBalanceUseCase } from "./GetBalanceUseCase";
 enum OperationType {
   DEPOSIT = "deposit",
   WITHDRAW = "withdraw",
+  TRANSFER = "transfer",
 }
 
 let getBalanceUseCase: GetBalanceUseCase;
@@ -45,7 +46,7 @@ describe("Get Balance", () => {
 
     expect(userBalance).toHaveProperty("balance");
     expect(userBalance.balance).toBe(0);
-    expect(userBalance.statement.length).toBe(0);
+    expect(userBalance.statements.length).toBe(0);
   });
 
   it("should be able to get a User Balance with statements", async () => {
@@ -73,14 +74,14 @@ describe("Get Balance", () => {
 
     expect(userBalance).toHaveProperty("balance");
     expect(userBalance.balance).toBe(100);
-    expect(userBalance.statement.length).toBe(2);
+    expect(userBalance.statements.length).toBe(2);
   });
 
-  it("should not be able to get a Balance of a non-existent user", () => {
-    expect(async () => {
-      await getBalanceUseCase.execute({
+  it("should not be able to get a Balance of a non-existent user", async () => {
+    await expect(
+      getBalanceUseCase.execute({
         user_id: "non-existent-user-id",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("User not found", 404));
   });
 });

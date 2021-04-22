@@ -29,12 +29,12 @@ describe("Create User", () => {
       password: "user_test_password",
     });
 
-    expect(async () => {
-      await createUserUseCase.execute({
+    await expect(
+      createUserUseCase.execute({
         name: "User Test 1",
         email: "user.test@test.com",
         password: "user_test_password",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("User already exists"));
   });
 });

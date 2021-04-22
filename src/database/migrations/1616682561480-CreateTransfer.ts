@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class accountsTable1616682561481 implements MigrationInterface {
+export class CreateTransfer1616682561480 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "statements",
+        name: "transfers",
         columns: [
           {
             name: "id",
@@ -12,29 +12,14 @@ export class accountsTable1616682561481 implements MigrationInterface {
             isPrimary: true,
           },
           {
-            name: "user_id",
+            name: "sender_id",
             type: "uuid",
           },
           {
-            name: "description",
-            type: "varchar",
-          },
-          {
-            name: "amount",
-            type: "decimal",
-            precision: 6,
-            scale: 2,
-          },
-          {
-            name: "type",
-            type: "enum",
-            enum: ["deposit", "withdraw", "transfer"],
-          },
-          {
-            name: "transfer_id",
+            name: "receiver_id",
             type: "uuid",
-            isNullable: true,
           },
+
           {
             name: "created_at",
             type: "timestamp",
@@ -48,20 +33,20 @@ export class accountsTable1616682561481 implements MigrationInterface {
         ],
         foreignKeys: [
           {
-            name: "FKStatementsUser",
-            columnNames: ["user_id"],
+            name: "FKSender",
             referencedTableName: "users",
             referencedColumnNames: ["id"],
-            onUpdate: "CASCADE",
-            onDelete: "CASCADE",
+            columnNames: ["sender_id"],
+            onDelete: "SET NULL",
+            onUpdate: "SET NULL",
           },
           {
-            name: "FKStatementsTransfer",
-            columnNames: ["transfer_id"],
-            referencedTableName: "transfers",
+            name: "FKReceiver",
+            referencedTableName: "users",
             referencedColumnNames: ["id"],
-            onUpdate: "CASCADE",
-            onDelete: "CASCADE",
+            columnNames: ["receiver_id"],
+            onDelete: "SET NULL",
+            onUpdate: "SET NULL",
           },
         ],
       })
@@ -69,6 +54,6 @@ export class accountsTable1616682561481 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("statements");
+    await queryRunner.dropTable("transfers");
   }
 }

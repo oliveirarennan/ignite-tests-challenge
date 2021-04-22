@@ -35,9 +35,9 @@ describe("Show user profile", () => {
     expect(userProfile.email).toEqual("user.test@test.com");
   });
 
-  it("should not be able to get profile of a non-existent user", () => {
-    expect(async () => {
-      await showUserProfileUseCase.execute("non_existent_user_id");
-    }).rejects.toBeInstanceOf(AppError);
+  it("should not be able to get profile of a non-existent user", async () => {
+    await expect(
+      showUserProfileUseCase.execute("non_existent_user_id")
+    ).rejects.toEqual(new AppError("User not found", 404));
   });
 });
