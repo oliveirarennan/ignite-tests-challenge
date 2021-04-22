@@ -13,7 +13,7 @@ class TransfersRepository implements ITransferRepository {
   async create(data: ICreateTransferDTO): Promise<Transfer> {
     const transfer = this.repository.create(data);
 
-    this.repository.save(transfer);
+    await this.repository.save(transfer);
 
     return transfer;
   }
